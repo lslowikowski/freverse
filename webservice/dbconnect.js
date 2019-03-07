@@ -35,7 +35,7 @@ exports.getTableNames = function (con, tableSchema) {
 
 function getPrimaryColumn(con, tableSchema, tableName) {	
 	// SELECT COLUMN_NAME AS 'primary' FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA='` + tableSchema + `' AND TABLE_NAME='` + tableName + `' and COLUMN_KEY='PRI'
-	var sql = `SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA='` + tableSchema + `' AND TABLE_NAME='` + tableName + `' and COLUMN_KEY='PRI' LIMIT 1 OFFSET 0`;
+	var sql = `SELECT CONCAT('concat(', REPLACE(GROUP_CONCAT(COLUMN_NAME), ',', ', '','', '),')') FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA='` + tableSchema + `' AND TABLE_NAME='` + tableName + `' and COLUMN_KEY='PRI'`;	
 	return new Promise((resolve, reject) => {
 		con.connect(function (err) {			
 			con.query(sql, function (err, result) {
@@ -83,6 +83,7 @@ exports.getTableData = function(con, tableSchema, tableName) {
 			.then((data) => { 
 				sql = `SELECT ` + data + ` AS 'PRIMARY_KEY', ` + tableName + `.* FROM ` + tableSchema + `.` + tableName; 				
 				//resolve('"'+sql+'"');
+				
 				con.connect(function (err) {
 					//if (err) throw err;
 					//console.log("Connected!");
@@ -138,7 +139,7 @@ exports.getTableData = function(con, tableSchema, tableName) {
 						resolve(outputStr);
 						//resolve(sql);
 					});
-				});
+				});				
 			})
 			.catch((err) => {
 				res.end(err);
