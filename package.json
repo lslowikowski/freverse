@@ -1,0 +1,21 @@
+{
+  "name": "sql01",
+  "version": "1.0.0",
+  "description": "SQL CRUD HTML Creator.",
+  "main": "dbconnect.js",
+  "dependencies": {
+    "mysql": "^2.16.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "test"
+  },
+  "keywords": [
+    "SQL",
+    "CRUD",
+    "HTML",
+    "Creator"
+  ],
+  "author": "Leszek Słowikowski",
+  "license": "LGPL-3.0"
+}
