@@ -21,13 +21,24 @@
                     webservice, 
                     {
                         tableSchema: "SAKILA",
-                        tableName: "film",
-                        columnName: "film_id",                    
+                        tableName: "klient",
+                        columnName: "klient_id",                    
                         format: "JSON",
                         dataType: 'JSONP'
                     })                             
                     .done(function (data) {
-                        console.log(JSON.stringify(data));                        
+                        //console.log(JSON.stringify(data));   
+                         $("#templates").load("template2.html", function (responseTxt, statusTxt, xhr) {
+                            if (statusTxt == "success") {
+                                //console.log("External content loaded successfully!: "+responseTxt);                    
+                                var output = Mustache.to_html(responseTxt, data);
+                                $("#templates").html(output);
+                                $("#templates").css("display", "block");
+                                //console.log(output);                
+                            }
+                            if (statusTxt == "error")
+                                console.log("Error: " + xhr.status + ": " + xhr.statusText);
+                        });                       
                         })
                     .fail(function (jqxhr, textStatus, error) {
                         var err = textStatus + ", " + error;
@@ -36,43 +47,7 @@
                     .always(function () {
                         console.log("complete");    
                     }
-                );
-              
-                
-           var view = {
-                "header": ["kategoria_id", "nazwa", "zmodyfikowano"],
-                "rows": [{ "row": ["1", "Akcja", "Wed Feb 15 2006 03:46:27 GMT+0100 (Ĺrodkowoeuropejski czas stand.)"] }
-                    , { "row": ["2", "Animowany", "Wed Feb 15 2006 03:46:27 GMT+0100 (Ĺrodkowoeuropejski czas stand.)"] }
-                    , { "row": ["3", "Dzieciecy", "Wed Feb 15 2006 03:46:27 GMT+0100 (Ĺrodkowoeuropejski czas stand.)"] }
-                    , { "row": ["4", "Fabularny", "Wed Feb 15 2006 03:46:27 GMT+0100 (Ĺrodkowoeuropejski czas stand.)"] }
-                    , { "row": ["5", "Komedia", "Wed Feb 15 2006 03:46:27 GMT+0100 (Ĺrodkowoeuropejski czas stand.)"] }
-                    , { "row": ["6", "Dokumentalny", "Wed Feb 15 2006 03:46:27 GMT+0100 (Ĺrodkowoeuropejski czas stand.)"] }
-                    , { "row": ["7", "Dramat", "Wed Feb 15 2006 03:46:27 GMT+0100 (Ĺrodkowoeuropejski czas stand.)"] }
-                    , { "row": ["8", "Familijny", "Wed Feb 15 2006 03:46:27 GMT+0100 (Ĺrodkowoeuropejski czas stand.)"] }
-                    , { "row": ["9", "Nieznany", "Wed Feb 15 2006 03:46:27 GMT+0100 (Ĺrodkowoeuropejski czas stand.)"] }
-                    , { "row": ["10", "Gra", "Wed Feb 15 2006 03:46:27 GMT+0100 (Ĺrodkowoeuropejski czas stand.)"] }
-                    , { "row": ["11", "Horror", "Wed Feb 15 2006 03:46:27 GMT+0100 (Ĺrodkowoeuropejski czas stand.)"] }
-                    , { "row": ["12", "Muzyczny", "Wed Feb 15 2006 03:46:27 GMT+0100 (Ĺrodkowoeuropejski czas stand.)"] }
-                    , { "row": ["13", "Nowosc", "Wed Feb 15 2006 03:46:27 GMT+0100 (Ĺrodkowoeuropejski czas stand.)"] }
-                    , { "row": ["14", "Sci-Fi", "Wed Feb 15 2006 03:46:27 GMT+0100 (Ĺrodkowoeuropejski czas stand.)"] }
-                    , { "row": ["15", "Sport", "Wed Feb 15 2006 03:46:27 GMT+0100 (Ĺrodkowoeuropejski czas stand.)"] }
-                    , { "row": ["16", "Podrozniczy", "Wed Feb 15 2006 03:46:27 GMT+0100 (Ĺrodkowoeuropejski czas stand.)"] }
-                ]
-            };         
-            
-            
-
-            $("#templates").load("template2.html", function (responseTxt, statusTxt, xhr) {
-                if(statusTxt == "success"){
-                    //console.log("External content loaded successfully!: "+responseTxt);                    
-                    var output = Mustache.to_html(responseTxt, view);
-                    $("#templates").html(output);
-                    $("#templates").css("display", "block");
-                    //console.log(output);                
-                }
-                if(statusTxt == "error")
-                    console.log("Error: " + xhr.status + ": " + xhr.statusText);                
-            });                                 
+                );                                       
         });
        
     </script>
