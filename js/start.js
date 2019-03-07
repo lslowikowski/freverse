@@ -10,7 +10,7 @@ $(document).ready(function () {
         webservice,
         {
             command: "getTableNames",
-            tableSchema: "SAKILA",            
+            tableSchema: "BIBLIOTEKARZ",            
             format: "JSON",
             dataType: 'JSONP'
         })
@@ -19,7 +19,13 @@ $(document).ready(function () {
             $("#tableListTemplates").load("templates/tableNamesTemplate.html", function (responseTxt, statusTxt, xhr) {
                 if (statusTxt == "success") {
                     //console.log("External content loaded successfully!: "+responseTxt);   
-                    const mainBrowser = new Browser("table-primary");                 
+                    //const mainBrowser = new Browser("table-primary");                 
+                    const mainBrowser = new List("http://localhost:8080", 
+                                                 "BIBLIOTEKARZ", 
+                                                 "#dataContainerId", 
+                                                 "templates/tableDataTemplate.html", 
+                                                 "#tableDataTemplateId",
+                                                 "table-primary");
                     var output = Mustache.to_html(responseTxt, data);
                     $("#tableListTemplates").html(output);
                     $("#tableListTemplates").css("display", "block");
