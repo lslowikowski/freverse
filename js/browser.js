@@ -5,14 +5,14 @@ class Browser {
         var getRecordDetail = function (event){
             var webservice = "http://localhost:8080";
             var targetElement = event.target || event.srcElement;
-            if(targetElement.tagName!='TR'){
-                targetElement = targetElement.closest('tr');
+            if (targetElement.className !='datarow'){
+                targetElement = targetElement.closest('.datarow');
             }
             $('.datarow').removeClass(markedClass);
             targetElement.classList.add(markedClass);
             var idValueStr = targetElement.dataset.id;
             var idValueArray = idValueStr.split(',');
-            var tbodyElement = targetElement.closest('tbody');
+            var tbodyElement = targetElement.closest('.databody');
             var pkNameStr = tbodyElement.dataset.pk;
             var pkNameArray = pkNameStr.split(',');
             var questionString='';
