@@ -1,4 +1,29 @@
 
+function getRecordDetail(event){
+    var webservice = "http://localhost:8080";
+    var targetElement = event.target || event.srcElement;
+    if(targetElement.tagName!='TR'){
+        targetElement = targetElement.closest('tr');
+    }
+    $('.datarow').removeClass("table-primary");
+    targetElement.classList.add("table-primary");
+    var idValueStr = targetElement.dataset.id;
+    var idValueArray = idValueStr.split(',');
+    var tbodyElement = targetElement.closest('tbody');
+    var pkNameStr = tbodyElement.dataset.pk;
+    var pkNameArray = pkNameStr.split(',');
+    var questionString='';
+    for (var i = 0; i < pkNameArray.length; i++){
+        if(i==0){
+            questionString += '(' + pkNameArray[i] + '=' + idValueArray[i] + ')';
+        }
+        else{
+            questionString += ' AND (' + pkNameArray[i] + '=' + idValueArray[i] + ')';
+        }
+    }
+    alert(questionString);
+}
+
 function getDataTable(event) {
     var webservice = "http://localhost:8080";
     var targetElement = event.target || event.srcElement;
@@ -30,6 +55,7 @@ function getDataTable(event) {
                         
                     });
                     //console.log(output);                
+                    $('.datarow').on('click', getRecordDetail);
                 }
                 if (statusTxt == "error")
                     console.log("Error: " + xhr.status + ": " + xhr.statusText);
