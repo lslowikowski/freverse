@@ -71,8 +71,7 @@ class Browser {
                 })
                 .always(function () {
                     console.log("complete");
-                }
-                );
+                });
         }
     }
 }
