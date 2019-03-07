@@ -20,28 +20,42 @@ exports.fieldSize = function(con, tableSchema, tableName, columnName) {
 					console.log("Connected!");
 					con.query(sql, function (err, result) {
 						if (err) throw reject(err);
-						var outputStr = '{"table":[';	
+						var outputStr = '{"header":[';	
 						var firstRow = true;
 						for (var key in result){
 							var firstColumn = true;
 							if(firstRow){
-								outputStr += '[';
+								//generate header
+								var row = result[key];
+								for (var property in row) {
+									if (firstColumn) {
+										firstColumn = false;
+										outputStr += '"' + property + '"';
+									}
+									else {
+										outputStr += ', "' + property + '"';
+									}
+								}
+								outputStr += '],<br>\n'
+
+								outputStr += '"rows": [';
 								firstRow = false;
 							}
 							else{
-								outputStr += ', [';
+								outputStr += ', ';
 							}
 							var row = result[key];
+							firstColumn = true;
 							for (var property in row) {
 								if(firstColumn){
 									firstColumn = false;
-									outputStr +=  '"' + row[property]+'"';
+									outputStr +=  '{"row": ["' + row[property]+'"';
 								}
 								else{
 									outputStr +=  ', "' + row[property]+'"';
 								}
 							}
-							outputStr += ']\n'
+							outputStr += ']}<br>\n'
 						}
 						outputStr += ']}'
 						//resolve(result[0]['COLUMN_NAME']+':'+result[0]['DATA_TYPE']+':'+result[0]['CHARACTER_MAXIMUM_LENGTH']+':'+result[0]['NUMERIC_PRECISION']);
