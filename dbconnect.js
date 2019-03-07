@@ -1,4 +1,40 @@
-exports.fieldSize = function(con, tableSchema, tableName, columnName) {
+exports.getTableNames = function (con, tableSchema) {
+	var sql = `SELECT TABLE_NAME
+				FROM INFORMATION_SCHEMA.TABLES
+				WHERE table_schema='` + tableSchema + `'
+				AND TABLE_TYPE = 'BASE TABLE'`;
+
+	return new Promise((resolve, reject) => {
+		con.connect(function (err) {
+			//if (err) throw err;
+			console.log("Connected!");
+			con.query(sql, function (err, result) {
+				if (err) throw reject(err);
+				var outputStr = '{"tablenames":[';
+				var firstRow = true;
+				for (var key in result) {
+					if (firstRow) {
+						//generate header
+						var tableName = result[key];
+						outputStr += '"' + tableName["TABLE_NAME"] + '"';
+						firstRow = false;
+					}
+					else {
+						var tableName = result[key];
+						outputStr += ', "' + tableName["TABLE_NAME"] + '"';
+					}
+				}
+				outputStr += ']}'
+				resolve(outputStr);
+			});
+		});
+	});
+
+}
+//http://localhost:8080/?command=getTableNames&tableSchema=SAKILA
+
+exports.getTableData = function(con, tableSchema, tableName) {
+	/*
 	var sql = `SELECT INFORMATION_SCHEMA.COLUMNS.*, 
 				   INFORMATION_SCHEMA.KEY_COLUMN_USAGE.REFERENCED_TABLE_NAME, 
 				   INFORMATION_SCHEMA.KEY_COLUMN_USAGE.REFERENCED_COLUMN_NAME
@@ -11,9 +47,8 @@ exports.fieldSize = function(con, tableSchema, tableName, columnName) {
 				and INFORMATION_SCHEMA.COLUMNS.TABLE_NAME = '` + tableName + `' 
 				and INFORMATION_SCHEMA.COLUMNS.COLUMN_NAME = '` + columnName + `' 
 			ORDER BY INFORMATION_SCHEMA.COLUMNS.ORDINAL_POSITION`;   
-			sql = `SELECT * FROM ` + tableName ;
-			
-			
+	*/		
+	sql = `SELECT * FROM ` + tableSchema + `.` + tableName ;				
 			return new Promise((resolve, reject) => { 
 				con.connect(function(err) {			
 					//if (err) throw err;
@@ -66,4 +101,5 @@ exports.fieldSize = function(con, tableSchema, tableName, columnName) {
 			});						
 			
 } 
-//http://localhost:8080/?tableSchema=SAKILA&tableName=FILM&columnName=stawka_wypozycz
+//http://localhost:8080/?command=getTableData&tableSchema=SAKILA&tableName=FILM
+

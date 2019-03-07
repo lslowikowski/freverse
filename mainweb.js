@@ -20,12 +20,26 @@ http.createServer(function (req, res) {
   //parsujemy przekazane parametry wywołania webservice
   //w obiekcie q znajdą się poszczegóelne parametry wywołania webservice
   var q = url.parse(req.url, true).query;    
-  //res.end(dbconnect.fieldSize(con, q.tableSchema, q.tableName, q.columnName));
-  dbconnect.fieldSize(con, q.tableSchema, q.tableName, q.columnName).then((data) => { 
-    res.end(data);
-  }).catch((err) => { 
-    res.end(err); 
-  });
-}).listen(8080);
 
-//http://localhost:8080/?tableSchema=SAKILA&tableName=FILM&columnName=TYTUL
+  switch (q.command){
+    case "getTableNames" : {
+      dbconnect.getTableNames(con, q.tableSchema).then((data) => {
+        res.end(data);
+      }).catch((err) => {
+        res.end(err);
+      });
+      break;
+    };
+    //http://localhost:8080/?command=getTableNames&tableSchema=SAKILA
+    case "getTableData": {
+      dbconnect.getTableData(con, q.tableSchema, q.tableName).then((data) => {
+        res.end(data);
+      }).catch((err) => {
+        res.end(err);
+      });
+      break;
+    };
+  }
+  
+}).listen(8080);
+//http://localhost:8080/?command=getTableData&tableSchema=SAKILA&tableName=FILM
