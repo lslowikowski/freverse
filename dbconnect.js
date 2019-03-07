@@ -36,7 +36,7 @@ exports.fieldSize = function(con, tableSchema, tableName, columnName) {
 										outputStr += ', "' + property + '"';
 									}
 								}
-								outputStr += '],<br>\n'
+								outputStr += '],\n'
 
 								outputStr += '"rows": [';
 								firstRow = false;
@@ -55,7 +55,7 @@ exports.fieldSize = function(con, tableSchema, tableName, columnName) {
 									outputStr +=  ', "' + row[property]+'"';
 								}
 							}
-							outputStr += ']}<br>\n'
+							outputStr += ']}\n'
 						}
 						outputStr += ']}'
 						//resolve(result[0]['COLUMN_NAME']+':'+result[0]['DATA_TYPE']+':'+result[0]['CHARACTER_MAXIMUM_LENGTH']+':'+result[0]['NUMERIC_PRECISION']);

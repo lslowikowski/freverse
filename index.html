@@ -1,8 +1,10 @@
 <!doctype html>
-<html lang="en">
+<html lang="pl">
 
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Mustache.js Inline Method</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <!-- jQuery library -->
@@ -10,20 +12,33 @@
     <!-- Latest bootstrap compiled JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <!-- Mustache.js -->
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/mustache.js/0.3.0/mustache.min.js"></script>
-    
-        
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/mustache.js/0.3.0/mustache.min.js"></script>        
     
     <script>
-        $(function () {
-            /*
-            var view =  { "header": ["kategoria_id", "Nazwa", "Data utworzenia"] , 
-                "rows":[
-                    {"row" : ["1", "Akcja","Wed Feb 15 2006 03:46:27"]}, 
-                    {"row" : ["2", "Animowany", "Wed Feb 15 2006 03:46:27"]}
-                ] }
-            ; 
-            */
+        $(function () {                                          
+                var webservice = "http://localhost:8080";
+                $.getJSON(
+                    webservice, 
+                    {
+                        tableSchema: "SAKILA",
+                        tableName: "film",
+                        columnName: "film_id",                    
+                        format: "JSON",
+                        dataType: 'JSONP'
+                    })                             
+                    .done(function (data) {
+                        console.log(JSON.stringify(data));                        
+                        })
+                    .fail(function (jqxhr, textStatus, error) {
+                        var err = textStatus + ", " + error;
+                        console.log("Request Failed: " + err);
+                    })
+                    .always(function () {
+                        console.log("complete");    
+                    }
+                );
+              
+                
            var view = {
                 "header": ["kategoria_id", "nazwa", "zmodyfikowano"],
                 "rows": [{ "row": ["1", "Akcja", "Wed Feb 15 2006 03:46:27 GMT+0100 (Ĺrodkowoeuropejski czas stand.)"] }
@@ -45,6 +60,8 @@
                 ]
             };         
             
+            
+
             $("#templates").load("template2.html", function (responseTxt, statusTxt, xhr) {
                 if(statusTxt == "success"){
                     //console.log("External content loaded successfully!: "+responseTxt);                    
@@ -57,6 +74,7 @@
                     console.log("Error: " + xhr.status + ": " + xhr.statusText);                
             });                                 
         });
+       
     </script>
     </head>
     

@@ -12,7 +12,10 @@ var con = mysql.createConnection({
 });
 
 http.createServer(function (req, res) {
-  res.writeHead(200, {'Content-Type': 'text/html'});
+  res.writeHead(200, {
+    "Access-Control-Allow-Origin": "*", "Content-Type": "application/json; charset=UTF-8"
+  }
+  );
   var q = url.parse(req.url, true).query;  
   //res.write(first_module.myDateTime());
   //res.end(dbconnect.fieldSize(con, q.tableSchema, q.tableName, q.columnName));
