@@ -1,15 +1,5 @@
-/**
- * fieldSize returns basics info about column settings.
- * Parameters: 
- * - con - connection with database
- * - tableSchema - table schema where column is
- * - tableName - name of table where column is
- *  - columnName - name of column
- */
-
 exports.fieldSize = function(con, tableSchema, tableName, columnName) {
-	var sql = `SELECT GetMaxFieldLen('` + tableSchema + `', '` + tableName + `', '` + columnName + `') as 'FieldSize',
-				   INFORMATION_SCHEMA.COLUMNS.*, 
+	var sql = `SELECT INFORMATION_SCHEMA.COLUMNS.*, 
 				   INFORMATION_SCHEMA.KEY_COLUMN_USAGE.REFERENCED_TABLE_NAME, 
 				   INFORMATION_SCHEMA.KEY_COLUMN_USAGE.REFERENCED_COLUMN_NAME
 			FROM INFORMATION_SCHEMA.COLUMNS
@@ -20,33 +10,46 @@ exports.fieldSize = function(con, tableSchema, tableName, columnName) {
 			WHERE INFORMATION_SCHEMA.COLUMNS.TABLE_SCHEMA='` + tableSchema + `'
 				and INFORMATION_SCHEMA.COLUMNS.TABLE_NAME = '` + tableName + `' 
 				and INFORMATION_SCHEMA.COLUMNS.COLUMN_NAME = '` + columnName + `' 
-			ORDER BY KEY_COLUMN_USAGE.POSITION_IN_UNIQUE_CONSTRAINT DESC
-			LIMIT 1 OFFSET 0`;   
-	//console.log(sql);
-			//funkcja zwraca Promise (obietnicę), 
-			//- w przypadku powodzenia będzie zwrócone resolve (rozwiązanie)
-			//- w przypadku niepowodzenia zwrócone zostanie reject (odrzucenie)
+			ORDER BY INFORMATION_SCHEMA.COLUMNS.ORDINAL_POSITION`;   
+			sql = `SELECT * FROM ` + tableName ;
+			
+			
 			return new Promise((resolve, reject) => { 
-				//połączenie z bazą danych
-				con.connect(function(err) {													
-					//zapytanie do bazy danych
+				con.connect(function(err) {			
+					//if (err) throw err;
+					console.log("Connected!");
 					con.query(sql, function (err, result) {
-						//w przypadku błędu zwracamy kod błędu wywołując metodę reject
 						if (err) throw reject(err);
-						//w przypadku powodzenia przetwarzamy zwrócone dane
-						var outputStr = '';
+						var outputStr = '{"table":[';	
+						var firstRow = true;
 						for (var key in result){
+							var firstColumn = true;
+							if(firstRow){
+								outputStr += '[';
+								firstRow = false;
+							}
+							else{
+								outputStr += ', [';
+							}
 							var row = result[key];
 							for (var property in row) {
-								outputStr += property + ': ' + row[property]+';<br>\n ';
-							  }
-							//outputStr += JSON.stringify(row);
-						}						
+								if(firstColumn){
+									firstColumn = false;
+									outputStr +=  '"' + row[property]+'"';
+								}
+								else{
+									outputStr +=  ', "' + row[property]+'"';
+								}
+							}
+							outputStr += ']\n'
+						}
+						outputStr += ']}'
+						//resolve(result[0]['COLUMN_NAME']+':'+result[0]['DATA_TYPE']+':'+result[0]['CHARACTER_MAXIMUM_LENGTH']+':'+result[0]['NUMERIC_PRECISION']);
 						//outputStr = JSON.stringify(result);
-						//w przypadku powodzenia zwracane jest rosolve (rozwiązanie)
 						resolve(outputStr);
 					});
 				});				
-			});									
+			});						
+			
 } 
 //http://localhost:8080/?tableSchema=SAKILA&tableName=FILM&columnName=stawka_wypozycz

@@ -1,11 +1,11 @@
-<div id="template1">
-    <h1>{{name}}</h1>
-</div>
-
-<div id="template2">
-    <div>{{name}}</div>
-</div>
-
-<div id="template3">
-    <p><span>{{name}}</span></p>
+<div id="template1">  
+        {{#wiersze}}
+        <tr> 
+            {{#wiersz}}
+            <td>
+                {{.}}
+            </td>
+            {{/wiersz}}
+        </tr>
+        {{/wiersze}}
 </div>
