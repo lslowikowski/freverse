@@ -1,14 +1,14 @@
 class List{
-    private webservice: string;
-    private databaseName: string;
-    private dataContainerId: string;
-    private tableDataTemplate: string;
-    private tableDataTemplateId : string;
-    private markedClass: string;
-    private dataBodyClass: string;
-    private dataRowClass: string;
-    private dataPrimaryKey: string;
-    private dataId: string;
+    private _webservice: string;
+    private _databaseName: string;
+    private _dataContainerId: string;
+    private _tableDataTemplate: string;
+    private _tableDataTemplateId : string;
+    private _markedClass: string;
+    private _dataBodyClass: string;
+    private _dataRowClass: string;
+    private _dataPrimaryKey: string;
+    private _dataId: string;
     constructor(webservice: string,
                 databaseName: string,
                 dataContainerId: string = "#dataContainerId",
@@ -20,90 +20,125 @@ class List{
                 dataPrimaryKey: string = "data-pk", 
                 dataId: string = "data-id"){
         //webservice adress 
-        this.webservice = webservice;
+        this._webservice = webservice;
         //database name
-        this.databaseName = databaseName;
+        this._databaseName = databaseName;
         //id HTML element data container <div id=dataContainerId>
-        this.dataContainerId = dataContainerId;
+        this._dataContainerId = dataContainerId;
         //HTML template name  with path
-        this.tableDataTemplate = tableDataTemplate;
+        this._tableDataTemplate = tableDataTemplate;
         //id HTML element with template
-        this.tableDataTemplateId = tableDataTemplateId;
+        this._tableDataTemplateId = tableDataTemplateId;
         //markedClass is class to marked element with clicked record
-        this.markedClass = markedClass;        
+        this._markedClass = markedClass;        
         //dataBodyClass is HTML element class where data are showing
-        this.dataBodyClass = dataBodyClass;
+        this._dataBodyClass = dataBodyClass;
         //dataRowClass is element class with single data row
-        this.dataRowClass = dataRowClass;
+        this._dataRowClass = dataRowClass;
         //HTML element data parameter name where are primary key names
-        this.dataPrimaryKey = dataPrimaryKey;
+        this._dataPrimaryKey = dataPrimaryKey;
         //HTML element data parameter name where are primary key values
-        this.dataId = dataId;
+        this._dataId = dataId;
         //bind this to event method 
         //jeżeli tego nie zrobimy, metoda obsługująca zdarzenie nic nie wie o klasie, w której się znajduje
         this.getDataTable = this.getDataTable.bind(this);
         this.getRecordDetail = this.getRecordDetail.bind(this);        
     }
 
+
+    get webservice(): string {
+        return this._webservice;
+    }
+
+    set webservice(value: string) {
+        this._webservice = value;
+    }
+
+    public get databaseName() : string {
+        return this._databaseName;
+    }
+        
+    public set databaseName(databaseName: string){
+        this._databaseName = databaseName;
+    }
     
-    public set setWebservice(webservice: string){
-        this.webservice = webservice;
+    public get dataContainerId() : string {
+        return this._dataContainerId;
     }
     
-    public set setDatabaseName(databaseName: string){
-        this.databaseName = databaseName;
+    public set dataContainerId(dataContainerId: string){
+        this._dataContainerId = dataContainerId;
+    }
+    
+    public get tableDataTemplate() : string {
+        return this._tableDataTemplate;
+    }
+    
+    public set tableDataTemplate(tableDataTemplate: string){
+        this._tableDataTemplate = tableDataTemplate;
+    }
+    
+    public get tableDataTemplateId() : string {
+        return this._tableDataTemplateId;
+    }
+    
+    public set tableDataTemplateId(tableDataTemplateId: string){
+        this._tableDataTemplateId = tableDataTemplateId;
+    }
+    
+    public get markedClass() : string {
+        return this._markedClass;
+    }
+    
+    public set markedClass(markedClass : string){
+        this._markedClass = markedClass;
+    }
+    
+    public get dataBodyClass() : string {
+        return this._dataBodyClass;
+    }
+    
+    public set dataBodyClass(dataBodyClass: string){
+        this._dataBodyClass = dataBodyClass;
+    }
+    
+    public get dataRowClass() : string {
+        return this._dataRowClass;
+    }
+    
+    public set dataRowClass(dataRowClass: string){
+        this._dataRowClass = dataRowClass;
     }
 
-    public set setDataContainerId(dataContainerId: string){
-        this.dataContainerId = dataContainerId;
+    public set dataPrimaryKey(dataPrimaryKey: string){
+        this._dataPrimaryKey = dataPrimaryKey;
     }
-
-    public set setTableDataTemplate(tableDataTemplate: string){
-        this.tableDataTemplate = tableDataTemplate;
+    
+    public get dataId() : string {
+        return this._dataId;
     }
-
-    public set setTableDataTemplateId(tableDataTemplateId: string){
-        this.tableDataTemplateId = tableDataTemplateId;
+    
+    public set dataId(dataId: string){
+        this._dataId = dataId;
     }
-
-    public set setMarkedClass(markedClass : string){
-        this.markedClass = markedClass;
-    }
-
-    public set setDataBodyClass(dataBodyClass: string){
-        this.dataBodyClass = dataBodyClass;
-    }
-
-    public set seDataRowClass(dataRowClass: string){
-        this.dataRowClass = dataRowClass;
-    }
-
-    public set setDataPrimaryKey(dataPrimaryKey: string){
-        this.dataPrimaryKey = dataPrimaryKey;
-    }
-
-    public set setDataId(dataId: string){
-        this.dataId = dataId;
-    }
-
 
     public getRecordDetail(event:Event){                
         var datarow: HTMLElement;
         if (event.target instanceof Element){            
             let targetElement = event.target || event.srcElement;
-            if (targetElement.className != this.dataRowClass) 
-                datarow = targetElement.closest(this.dataRowClass) as HTMLElement;
+            if (targetElement.className != this._dataRowClass) 
+                datarow = targetElement.closest(this._dataRowClass) as HTMLElement;
             else datarow = targetElement as HTMLElement;            
             if(datarow!==null){
                 let targetElement = datarow;
-                $('.datarow').removeClass(this.markedClass);
-                targetElement.classList.add(this.markedClass);
-                var idValueStr = targetElement.getAttribute(this.dataId);
+                $('.datarow').removeClass(this._markedClass);
+                targetElement.classList.add(this._markedClass);
+                var idValueStr = targetElement.getAttribute(this._dataId);
                 if(idValueStr){
                     var idValueArray = idValueStr.split(',');                        
-                    var tbodyElement = targetElement.closest(this.dataBodyClass);
+                    var tbodyElement = targetElement.closest(this._dataBodyClass);
                     if(tbodyElement){
-                        var pkNameStr = tbodyElement.getAttribute(this.dataPrimaryKey);
+                        var pkNameStr = tbodyElement.getAttribute(this._dataPrimaryKey);
                         if(pkNameStr){
                             var pkNameArray = pkNameStr.split(',');
                             var questionString = '';
@@ -131,18 +166,18 @@ class List{
     public getDataTable(event:Event){         
         let targetElement = event.target || event.srcElement;   
         let funkcja = this.getRecordDetail;     
-        let webservice = this.webservice;
-        let tableDataTemplate = this.tableDataTemplate;
-        let tableDataTemplateId = this.tableDataTemplateId;
-        let dataContainerId = this.dataContainerId;
-        let dataRowClass = this.dataRowClass;
+        let webservice = this._webservice;
+        let tableDataTemplate = this._tableDataTemplate;
+        let tableDataTemplateId = this._tableDataTemplateId;
+        let dataContainerId = this._dataContainerId;
+        let dataRowClass = this._dataRowClass;
         if (targetElement instanceof HTMLElement){
             let tableName = targetElement.innerText;
             $.getJSON(
                 webservice,
                 {
                     command: "getTableData",
-                    tableSchema: this.databaseName,
+                    tableSchema: this._databaseName,
                     tableName: tableName,
                     format: "JSON",
                     dataType: 'JSONP'
@@ -163,6 +198,7 @@ class List{
 
                             });
                             //console.log(output);                                            
+                            // noinspection Annotator
                             $(dataRowClass).on('click', funkcja);
                         }
                         if (statusTxt == "error")

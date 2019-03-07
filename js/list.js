@@ -10,96 +10,123 @@ var List = /** @class */ (function () {
         if (dataPrimaryKey === void 0) { dataPrimaryKey = "data-pk"; }
         if (dataId === void 0) { dataId = "data-id"; }
         //webservice adress 
-        this.webservice = webservice;
+        this._webservice = webservice;
         //database name
-        this.databaseName = databaseName;
+        this._databaseName = databaseName;
         //id HTML element data container <div id=dataContainerId>
-        this.dataContainerId = dataContainerId;
+        this._dataContainerId = dataContainerId;
         //HTML template name  with path
-        this.tableDataTemplate = tableDataTemplate;
+        this._tableDataTemplate = tableDataTemplate;
         //id HTML element with template
-        this.tableDataTemplateId = tableDataTemplateId;
+        this._tableDataTemplateId = tableDataTemplateId;
         //markedClass is class to marked element with clicked record
-        this.markedClass = markedClass;
+        this._markedClass = markedClass;
         //dataBodyClass is HTML element class where data are showing
-        this.dataBodyClass = dataBodyClass;
+        this._dataBodyClass = dataBodyClass;
         //dataRowClass is element class with single data row
-        this.dataRowClass = dataRowClass;
+        this._dataRowClass = dataRowClass;
         //HTML element data parameter name where are primary key names
-        this.dataPrimaryKey = dataPrimaryKey;
+        this._dataPrimaryKey = dataPrimaryKey;
         //HTML element data parameter name where are primary key values
-        this.dataId = dataId;
+        this._dataId = dataId;
         //bind this to event method 
         //jeżeli tego nie zrobimy, metoda obsługująca zdarzenie nic nie wie o klasie, w której się znajduje
         this.getDataTable = this.getDataTable.bind(this);
         this.getRecordDetail = this.getRecordDetail.bind(this);
     }
-    Object.defineProperty(List.prototype, "setWebservice", {
-        set: function (webservice) {
-            this.webservice = webservice;
+    Object.defineProperty(List.prototype, "webservice", {
+        get: function () {
+            return this._webservice;
+        },
+        set: function (value) {
+            this._webservice = value;
         },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(List.prototype, "setDatabaseName", {
+    Object.defineProperty(List.prototype, "databaseName", {
+        get: function () {
+            return this._databaseName;
+        },
         set: function (databaseName) {
-            this.databaseName = databaseName;
+            this._databaseName = databaseName;
         },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(List.prototype, "setDataContainerId", {
+    Object.defineProperty(List.prototype, "dataContainerId", {
+        get: function () {
+            return this._dataContainerId;
+        },
         set: function (dataContainerId) {
-            this.dataContainerId = dataContainerId;
+            this._dataContainerId = dataContainerId;
         },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(List.prototype, "setTableDataTemplate", {
+    Object.defineProperty(List.prototype, "tableDataTemplate", {
+        get: function () {
+            return this._tableDataTemplate;
+        },
         set: function (tableDataTemplate) {
-            this.tableDataTemplate = tableDataTemplate;
+            this._tableDataTemplate = tableDataTemplate;
         },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(List.prototype, "setTableDataTemplateId", {
+    Object.defineProperty(List.prototype, "tableDataTemplateId", {
+        get: function () {
+            return this._tableDataTemplateId;
+        },
         set: function (tableDataTemplateId) {
-            this.tableDataTemplateId = tableDataTemplateId;
+            this._tableDataTemplateId = tableDataTemplateId;
         },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(List.prototype, "setMarkedClass", {
+    Object.defineProperty(List.prototype, "markedClass", {
+        get: function () {
+            return this._markedClass;
+        },
         set: function (markedClass) {
-            this.markedClass = markedClass;
+            this._markedClass = markedClass;
         },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(List.prototype, "setDataBodyClass", {
+    Object.defineProperty(List.prototype, "dataBodyClass", {
+        get: function () {
+            return this._dataBodyClass;
+        },
         set: function (dataBodyClass) {
-            this.dataBodyClass = dataBodyClass;
+            this._dataBodyClass = dataBodyClass;
         },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(List.prototype, "seDataRowClass", {
+    Object.defineProperty(List.prototype, "dataRowClass", {
+        get: function () {
+            return this._dataRowClass;
+        },
         set: function (dataRowClass) {
-            this.dataRowClass = dataRowClass;
+            this._dataRowClass = dataRowClass;
         },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(List.prototype, "setDataPrimaryKey", {
+    Object.defineProperty(List.prototype, "dataPrimaryKey", {
         set: function (dataPrimaryKey) {
-            this.dataPrimaryKey = dataPrimaryKey;
+            this._dataPrimaryKey = dataPrimaryKey;
         },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(List.prototype, "setDataId", {
+    Object.defineProperty(List.prototype, "dataId", {
+        get: function () {
+            return this._dataId;
+        },
         set: function (dataId) {
-            this.dataId = dataId;
+            this._dataId = dataId;
         },
         enumerable: true,
         configurable: true
@@ -108,20 +135,20 @@ var List = /** @class */ (function () {
         var datarow;
         if (event.target instanceof Element) {
             var targetElement = event.target || event.srcElement;
-            if (targetElement.className != this.dataRowClass)
-                datarow = targetElement.closest(this.dataRowClass);
+            if (targetElement.className != this._dataRowClass)
+                datarow = targetElement.closest(this._dataRowClass);
             else
                 datarow = targetElement;
             if (datarow !== null) {
                 var targetElement_1 = datarow;
-                $('.datarow').removeClass(this.markedClass);
-                targetElement_1.classList.add(this.markedClass);
-                var idValueStr = targetElement_1.getAttribute(this.dataId);
+                $('.datarow').removeClass(this._markedClass);
+                targetElement_1.classList.add(this._markedClass);
+                var idValueStr = targetElement_1.getAttribute(this._dataId);
                 if (idValueStr) {
                     var idValueArray = idValueStr.split(',');
-                    var tbodyElement = targetElement_1.closest(this.dataBodyClass);
+                    var tbodyElement = targetElement_1.closest(this._dataBodyClass);
                     if (tbodyElement) {
-                        var pkNameStr = tbodyElement.getAttribute(this.dataPrimaryKey);
+                        var pkNameStr = tbodyElement.getAttribute(this._dataPrimaryKey);
                         if (pkNameStr) {
                             var pkNameArray = pkNameStr.split(',');
                             var questionString = '';
@@ -153,16 +180,16 @@ var List = /** @class */ (function () {
     List.prototype.getDataTable = function (event) {
         var targetElement = event.target || event.srcElement;
         var funkcja = this.getRecordDetail;
-        var webservice = this.webservice;
-        var tableDataTemplate = this.tableDataTemplate;
-        var tableDataTemplateId = this.tableDataTemplateId;
-        var dataContainerId = this.dataContainerId;
-        var dataRowClass = this.dataRowClass;
+        var webservice = this._webservice;
+        var tableDataTemplate = this._tableDataTemplate;
+        var tableDataTemplateId = this._tableDataTemplateId;
+        var dataContainerId = this._dataContainerId;
+        var dataRowClass = this._dataRowClass;
         if (targetElement instanceof HTMLElement) {
             var tableName = targetElement.innerText;
             $.getJSON(webservice, {
                 command: "getTableData",
-                tableSchema: this.databaseName,
+                tableSchema: this._databaseName,
                 tableName: tableName,
                 format: "JSON",
                 dataType: 'JSONP'
@@ -182,6 +209,7 @@ var List = /** @class */ (function () {
                             paging: false
                         });
                         //console.log(output);                                            
+                        // noinspection Annotator
                         $(dataRowClass).on('click', funkcja);
                     }
                     if (statusTxt == "error")
@@ -201,5 +229,5 @@ var List = /** @class */ (function () {
     };
     return List;
 }());
-//const lista = new List("table-primary", "http://localhost:8080");
+//const lista = new List("table-primary", "http://localhost:8080"); 
 //# sourceMappingURL=list.js.map
