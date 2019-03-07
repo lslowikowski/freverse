@@ -1,30 +1,15 @@
-// in console you should run:
-// npm install mysql
+/**
+ * fieldSize returns basics info about column settings.
+ * Parameters: 
+ * - con - connection with database
+ * - tableSchema - table schema where column is
+ * - tableName - name of table where column is
+ *  - columnName - name of column
+ */
 
-var mysql = require('mysql');
-
-var con = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "sakila"
-});
-
-/*
-con.connect(function(err) {
-  if (err) throw err;
-  console.log("Connected!");
-});
-*/
-function printElemet(element, index, array) {
-    console.log("[" + index + "] jest " + element);
-}
-
-function pad(width, string, padding) { 
-  return (width <= string.length) ? string : pad(width, padding + string, padding)
-}
-
-var sql = ` SELECT INFORMATION_SCHEMA.COLUMNS.*, 
+exports.fieldSize = function(con, tableSchema, tableName, columnName) {
+	var sql = `SELECT GetMaxFieldLen('` + tableSchema + `', '` + tableName + `', '` + columnName + `') as 'FieldSize',
+				   INFORMATION_SCHEMA.COLUMNS.*, 
 				   INFORMATION_SCHEMA.KEY_COLUMN_USAGE.REFERENCED_TABLE_NAME, 
 				   INFORMATION_SCHEMA.KEY_COLUMN_USAGE.REFERENCED_COLUMN_NAME
 			FROM INFORMATION_SCHEMA.COLUMNS
@@ -32,43 +17,36 @@ var sql = ` SELECT INFORMATION_SCHEMA.COLUMNS.*,
 				   ON (INFORMATION_SCHEMA.COLUMNS.TABLE_SCHEMA = INFORMATION_SCHEMA.KEY_COLUMN_USAGE.TABLE_SCHEMA
 				   AND INFORMATION_SCHEMA.COLUMNS.TABLE_NAME = INFORMATION_SCHEMA.KEY_COLUMN_USAGE.TABLE_NAME
 				   AND INFORMATION_SCHEMA.COLUMNS.COLUMN_NAME = INFORMATION_SCHEMA.KEY_COLUMN_USAGE.COLUMN_NAME)
-			WHERE INFORMATION_SCHEMA.COLUMNS.TABLE_SCHEMA='SAKILA' 
-			  and INFORMATION_SCHEMA.COLUMNS.TABLE_NAME ='FILM' 
-			ORDER BY INFORMATION_SCHEMA.COLUMNS.ORDINAL_POSITION`;   
-
-//var sql = "SELECT * FROM film";
-con.connect(function(err) {
-  if (err) throw err;
-  console.log("Connected!");
-  con.query(sql, function (err, result) {
-    if (err) throw err;	
-	
-	var keyNames = Object.keys(result[1]);
-			
-	for (var i = 0; i < result.length; i++){
-		var row = result[i];
-		if(i==0){
-			var keyNames = Object.keys(row);
-		}
-		console.log(result[i]['COLUMN_NAME']+':'+result[i]['DATA_TYPE']+':'+result[i]['CHARACTER_MAXIMUM_LENGTH']+':'+result[i]['NUMERIC_PRECISION']);
-		
-		/*
-		//console.log(keyNames);
-		for (var j = 0; j < keyNames.length; j++){
-			var keyName = keyNames[j];
-			console.log(keyName + ":" + result[i][keyName]);
-		}
-		*/
-	}
-	
-  });
-}); 
-
-con.on('close', function(err) {
-  if (err) {
-    // Oops! Unexpected closing of connection, lets reconnect back.
-    con = mysql.createConnection(connection.config);
-  } else {
-    console.log('Connection closed normally.');
-  }
-});
+			WHERE INFORMATION_SCHEMA.COLUMNS.TABLE_SCHEMA='` + tableSchema + `'
+				and INFORMATION_SCHEMA.COLUMNS.TABLE_NAME = '` + tableName + `' 
+				and INFORMATION_SCHEMA.COLUMNS.COLUMN_NAME = '` + columnName + `' 
+			ORDER BY KEY_COLUMN_USAGE.POSITION_IN_UNIQUE_CONSTRAINT DESC
+			LIMIT 1 OFFSET 0`;   
+	//console.log(sql);
+			//funkcja zwraca Promise (obietnicę), 
+			//- w przypadku powodzenia będzie zwrócone resolve (rozwiązanie)
+			//- w przypadku niepowodzenia zwrócone zostanie reject (odrzucenie)
+			return new Promise((resolve, reject) => { 
+				//połączenie z bazą danych
+				con.connect(function(err) {													
+					//zapytanie do bazy danych
+					con.query(sql, function (err, result) {
+						//w przypadku błędu zwracamy kod błędu wywołując metodę reject
+						if (err) throw reject(err);
+						//w przypadku powodzenia przetwarzamy zwrócone dane
+						var outputStr = '';
+						for (var key in result){
+							var row = result[key];
+							for (var property in row) {
+								outputStr += property + ': ' + row[property]+';<br>\n ';
+							  }
+							//outputStr += JSON.stringify(row);
+						}						
+						//outputStr = JSON.stringify(result);
+						//w przypadku powodzenia zwracane jest rosolve (rozwiązanie)
+						resolve(outputStr);
+					});
+				});				
+			});									
+} 
+//http://localhost:8080/?tableSchema=SAKILA&tableName=FILM&columnName=stawka_wypozycz

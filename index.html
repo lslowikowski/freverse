@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Mustache.js Inline Method</title>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/mustache.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+    
+    
+    <script>
+        $(document).ready(function () {
+            var view = {
+                name: "Joe",
+                occupation: "Web Developer"
+            };
+
+            $("#templates").load("template.html #template1", function () {
+                var template = document.getElementById('template1').innerHTML;
+                var output = Mustache.render(template, view);
+                $("#person").html(output);
+            });
+        });
+    </script>
+    </head>
+    
+    <body>
+        <p id="person"></p>
+        <div id="templates" style="display: none;"></div>
+    </body>
+    
+    </html>
