@@ -35,7 +35,8 @@ exports.getTableNames = function (con, tableSchema) {
 
 function getPrimaryColumn(con, tableSchema, tableName) {	
 	// SELECT COLUMN_NAME AS 'primary' FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA='` + tableSchema + `' AND TABLE_NAME='` + tableName + `' and COLUMN_KEY='PRI'
-	var sql = `SELECT CONCAT('concat(', REPLACE(GROUP_CONCAT(COLUMN_NAME), ',', ', '','', '),')') FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA='` + tableSchema + `' AND TABLE_NAME='` + tableName + `' and COLUMN_KEY='PRI'`;	
+	var sql = `SELECT GROUP_CONCAT(COLUMN_NAME)  FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA='` + tableSchema + `' AND TABLE_NAME='` + tableName + `' and COLUMN_KEY='PRI'`;
+	//var sql = `SELECT CONCAT('concat(', REPLACE(GROUP_CONCAT(COLUMN_NAME), ',', ', '','', '),')') FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA='` + tableSchema + `' AND TABLE_NAME='` + tableName + `' and COLUMN_KEY='PRI'`;	
 	return new Promise((resolve, reject) => {
 		con.connect(function (err) {			
 			con.query(sql, function (err, result) {
@@ -81,7 +82,9 @@ exports.getTableData = function(con, tableSchema, tableName) {
 		// SELECT COLUMN_NAME AS 'primary' FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA='sakila' AND TABLE_NAME='film' and COLUMN_KEY='PRI'
 		getPrimaryColumn(con, tableSchema, tableName)
 			.then((data) => { 
-				sql = `SELECT ` + data + ` AS 'PRIMARY_KEY', ` + tableName + `.* FROM ` + tableSchema + `.` + tableName; 				
+				var priKeyNames = data;
+				var fieldNames = 'CONCAT(' + data.replace(',', ", ',', ") + ')';
+				sql = `SELECT ` + fieldNames + ` AS 'PRIMARY_KEY', ` + tableName + `.* FROM ` + tableSchema + `.` + tableName; 				
 				//resolve('"'+sql+'"');
 				
 				con.connect(function (err) {
@@ -89,7 +92,7 @@ exports.getTableData = function(con, tableSchema, tableName) {
 					//console.log("Connected!");
 					con.query(sql, function (err, result) {
 						if (err) throw reject(err);
-						var outputStr = '{"header":[';
+						var outputStr = '{"pkNames":"' + priKeyNames + '", "header":[';
 						var firstRow = true;
 						for (var key in result) {
 							var columnNumber = 0;
@@ -140,6 +143,7 @@ exports.getTableData = function(con, tableSchema, tableName) {
 						//resolve(sql);
 					});
 				});				
+				
 			})
 			.catch((err) => {
 				res.end(err);
