@@ -29,8 +29,19 @@ http.createServer(function (req, res) {
         res.end(err);
       });
       break;
-    };
+    };    
     //http://localhost:8080/?command=getTableNames&tableSchema=SAKILA
+
+    case "getPrimaryColumn": {
+      dbconnect.getPrimaryColumn(con, q.tableSchema, q.tableName).then((data) => {
+        res.end(data);
+      }).catch((err) => {
+        res.end(err);
+      });
+      break;
+    };
+    //http://localhost:8080/?command=getPrimaryColumn&tableSchema=SAKILA&tableName=FILM
+    
     case "getTableData": {
       dbconnect.getTableData(con, q.tableSchema, q.tableName).then((data) => {
         res.end(data);

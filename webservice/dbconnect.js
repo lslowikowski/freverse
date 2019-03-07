@@ -7,7 +7,7 @@ exports.getTableNames = function (con, tableSchema) {
 	return new Promise((resolve, reject) => {
 		con.connect(function (err) {
 			//if (err) throw err;
-			console.log("Connected!");
+			//console.log("Connected!");
 			con.query(sql, function (err, result) {
 				if (err) throw reject(err);
 				var outputStr = '{"tablenames":[';
@@ -33,6 +33,34 @@ exports.getTableNames = function (con, tableSchema) {
 }
 //http://localhost:8080/?command=getTableNames&tableSchema=SAKILA
 
+function getPrimaryColumn(con, tableSchema, tableName) {	
+	// SELECT COLUMN_NAME AS 'primary' FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA='` + tableSchema + `' AND TABLE_NAME='` + tableName + `' and COLUMN_KEY='PRI'
+	var sql = `SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA='` + tableSchema + `' AND TABLE_NAME='` + tableName + `' and COLUMN_KEY='PRI' LIMIT 1 OFFSET 0`;
+	return new Promise((resolve, reject) => {
+		con.connect(function (err) {			
+			con.query(sql, function (err, result) {
+				if (err) throw reject(err);
+				var outputStr = '';
+				var firstRow = true;
+				for (var key in result) {					
+					var row = result[key];
+					for (var property in row) {
+						if (firstRow) {
+							outputStr += row[property];
+							firstRow = false;
+						}
+						else {
+							outputStr += row[property];
+						}						
+					}																		
+				}								
+				resolve(outputStr);
+			});
+		});
+	});
+} 
+//http://localhost:8080/?command=getPrimaryColumn&tableSchema=SAKILA&tableName=FILM
+
 exports.getTableData = function(con, tableSchema, tableName) {
 	/*
 	var sql = `SELECT INFORMATION_SCHEMA.COLUMNS.*, 
@@ -48,47 +76,59 @@ exports.getTableData = function(con, tableSchema, tableName) {
 				and INFORMATION_SCHEMA.COLUMNS.COLUMN_NAME = '` + columnName + `' 
 			ORDER BY INFORMATION_SCHEMA.COLUMNS.ORDINAL_POSITION`;   
 	*/		
-	sql = `SELECT * FROM ` + tableSchema + `.` + tableName ;				
-			return new Promise((resolve, reject) => { 
-				con.connect(function(err) {			
+	return new Promise((resolve, reject) => {
+		var sql = '';
+		// SELECT COLUMN_NAME AS 'primary' FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA='sakila' AND TABLE_NAME='film' and COLUMN_KEY='PRI'
+		getPrimaryColumn(con, tableSchema, tableName)
+			.then((data) => { 
+				sql = `SELECT ` + data + ` AS 'PRIMARY_KEY', ` + tableName + `.* FROM ` + tableSchema + `.` + tableName; 				
+				//resolve('"'+sql+'"');
+				con.connect(function (err) {
 					//if (err) throw err;
-					console.log("Connected!");
+					//console.log("Connected!");
 					con.query(sql, function (err, result) {
 						if (err) throw reject(err);
-						var outputStr = '{"header":[';	
+						var outputStr = '{"header":[';
 						var firstRow = true;
-						for (var key in result){
-							var firstColumn = true;
-							if(firstRow){
+						for (var key in result) {
+							var columnNumber = 0;
+							if (firstRow) {
 								//generate header
 								var row = result[key];
 								for (var property in row) {
-									if (firstColumn) {
-										firstColumn = false;
+									if (columnNumber == 0) {
+										//w zerowej kolumnie znajduje się PRIMARY_KEY nie dopisujemy do listy kolumn
+									} else
+									if (columnNumber==1) {										
 										outputStr += '"' + property + '"';
 									}
 									else {
 										outputStr += ', "' + property + '"';
 									}
+									columnNumber ++;
 								}
 								outputStr += '],\n'
 
 								outputStr += '"rows": [';
 								firstRow = false;
 							}
-							else{
+							else {
 								outputStr += ', ';
 							}
 							var row = result[key];
-							firstColumn = true;
+							columnNumber = 0;
 							for (var property in row) {
-								if(firstColumn){
-									firstColumn = false;
-									outputStr +=  '{"row": ["' + row[property]+'"';
+								if (columnNumber==0) {
+									//w zerowej kolumnie znajduje się PRIMARY_KEY nie dopisujemy do listy kolumn									
+									outputStr += '{"PRIMARY_KEY":"' + row[property]+'",'
+								} else
+								if (columnNumber==1) {									
+									outputStr += '"row": ["' + row[property] + '"';
 								}
-								else{
-									outputStr +=  ', "' + row[property]+'"';
+								else {
+									outputStr += ', "' + row[property] + '"';
 								}
+								columnNumber++;
 							}
 							outputStr += ']}\n'
 						}
@@ -96,10 +136,74 @@ exports.getTableData = function(con, tableSchema, tableName) {
 						//resolve(result[0]['COLUMN_NAME']+':'+result[0]['DATA_TYPE']+':'+result[0]['CHARACTER_MAXIMUM_LENGTH']+':'+result[0]['NUMERIC_PRECISION']);
 						//outputStr = JSON.stringify(result);
 						resolve(outputStr);
+						//resolve(sql);
 					});
-				});				
-			});						
-			
+				});
+			})
+			.catch((err) => {
+				res.end(err);
+			}); 		
+	});				
 } 
 //http://localhost:8080/?command=getTableData&tableSchema=SAKILA&tableName=FILM
 
+exports.getReferencedTable = function (con, tableSchema, tableName) {
+
+	var sql = `SELECT REFERENCED_COLUMN_NAME, TABLE_SCHEMA, TABLE_NAME, COLUMN_NAME
+			FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE
+			WHERE REFERENCED_TABLE_SCHEMA =  '` + tableSchema + `'
+			AND REFERENCED_TABLE_NAME = '` + tableName + `'
+			AND REFERENCED_COLUMN_NAME IS NOT null`	
+	return new Promise((resolve, reject) => {
+		con.connect(function (err) {
+			//if (err) throw err;
+			console.log("Connected!");
+			con.query(sql, function (err, result) {
+				if (err) throw reject(err);
+				var outputStr = '{"header":[';
+				var firstRow = true;
+				for (var key in result) {
+					var firstColumn = true;
+					if (firstRow) {
+						//generate header
+						var row = result[key];
+						for (var property in row) {
+							if (firstColumn) {
+								firstColumn = false;
+								outputStr += '"' + property + '"';
+							}
+							else {
+								outputStr += ', "' + property + '"';
+							}
+						}
+						outputStr += '],\n'
+
+						outputStr += '"rows": [';
+						firstRow = false;
+					}
+					else {
+						outputStr += ', ';
+					}
+					var row = result[key];
+					firstColumn = true;
+					for (var property in row) {
+						if (firstColumn) {
+							firstColumn = false;
+							outputStr += '{"row": ["' + row[property] + '"';
+						}
+						else {
+							outputStr += ', "' + row[property] + '"';
+						}
+					}
+					outputStr += ']}\n'
+				}
+				outputStr += ']}'
+				//resolve(result[0]['COLUMN_NAME']+':'+result[0]['DATA_TYPE']+':'+result[0]['CHARACTER_MAXIMUM_LENGTH']+':'+result[0]['NUMERIC_PRECISION']);
+				//outputStr = JSON.stringify(result);
+				resolve(outputStr);
+			});
+		});
+	});
+
+}
+//http://localhost:8080/?command=getTableData&tableSchema=SAKILA&tableName=FILM
