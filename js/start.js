@@ -1,3 +1,4 @@
+'use strict';
 $(document).ready(function () {    
 
     $('#sidebarCollapse').on('click', function () {
@@ -17,11 +18,12 @@ $(document).ready(function () {
             //console.log(JSON.stringify(data));   
             $("#tableListTemplates").load("templates/tableNamesTemplate.html", function (responseTxt, statusTxt, xhr) {
                 if (statusTxt == "success") {
-                    //console.log("External content loaded successfully!: "+responseTxt);                    
+                    //console.log("External content loaded successfully!: "+responseTxt);   
+                    const mainBrowser = new Browser("table-primary");                 
                     var output = Mustache.to_html(responseTxt, data);
                     $("#tableListTemplates").html(output);
                     $("#tableListTemplates").css("display", "block");
-                    $("a.tableList").on('click', getDataTable);
+                    $("a.tableList").on('click', mainBrowser.getDataTable);
                     //console.log(output);                
                 }
                 if (statusTxt == "error")
