@@ -1,4 +1,9 @@
-$(function () {
+$(document).ready(function () {    
+
+    $('#sidebarCollapse').on('click', function () {
+        $('#sidebar').toggleClass('active');
+    });
+
     var webservice = "http://localhost:8080";
     $.getJSON(
         webservice,
@@ -10,7 +15,7 @@ $(function () {
         })
         .done(function (data) {
             //console.log(JSON.stringify(data));   
-            $("#tableListTemplates").load("tableNames.html", function (responseTxt, statusTxt, xhr) {
+            $("#tableListTemplates").load("templates/tableNamesTemplate.html", function (responseTxt, statusTxt, xhr) {
                 if (statusTxt == "success") {
                     //console.log("External content loaded successfully!: "+responseTxt);                    
                     var output = Mustache.to_html(responseTxt, data);

@@ -4,6 +4,7 @@ function getDataTable(event) {
     var targetElement = event.target || event.srcElement;
     var tableName = targetElement.innerText;
     console.log("tableName: " + tableName);
+    
     $.getJSON(
         webservice,
         {
@@ -15,12 +16,19 @@ function getDataTable(event) {
         })
         .done(function (data) {
             //console.log(JSON.stringify(data));   
-            $("#templates").load("template2.html", function (responseTxt, statusTxt, xhr) {
+            $("#tableData").load("templates/tableDataTemplate.html", function (responseTxt, statusTxt, xhr) {
                 if (statusTxt == "success") {
                     //console.log("External content loaded successfully!: "+responseTxt);                    
                     var output = Mustache.to_html(responseTxt, data);
-                    $("#templates").html(output);
-                    $("#templates").css("display", "block");
+                    $("#tableData").html(output);
+                    $("#tableData").css("display", "block");
+                    //set datatables parameters
+                    $('#tableDataTemplateId').DataTable({
+                        scrollY: '50vh',
+                        scrollCollapse: true,
+                        paging: false
+                        
+                    });
                     //console.log(output);                
                 }
                 if (statusTxt == "error")
