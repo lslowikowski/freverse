@@ -4,16 +4,21 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Mustache.js Inline Method</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>    
+    <!-- Latest bootstrap compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <!-- Mustache.js -->
     <script src="http://cdnjs.cloudflare.com/ajax/libs/mustache.js/0.3.0/mustache.min.js"></script>
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     
+        
     
     <script>
         $(function () {
             
-            var view =  {"wiersze":[
+            var view =  { "header": ["kategoria_id", "Nazwa", "Data utworzenia"] , 
+                "wiersze":[
                     {"wiersz" : ["1", "Akcja","Wed Feb 15 2006 03:46:27"]}, 
                     {"wiersz" : ["2", "Animowany", "Wed Feb 15 2006 03:46:27"]}
                 ] }
@@ -22,7 +27,7 @@
             $("#templates").load("template2.html", function (responseTxt, statusTxt, xhr) {
                 if(statusTxt == "success"){
                     //console.log("External content loaded successfully!: "+responseTxt);                    
-                    //var output = Mustache.to_html(responseTxt, view);
+                    var output = Mustache.to_html(responseTxt, view);
                     $("#templates").html(output);
                     $("#templates").css("display", "block");
                     //console.log(output);                
