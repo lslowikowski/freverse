@@ -1,5 +1,5 @@
 There is no node_modules directory included in this github project.
-Every information about dependices ar in package-lock.json file.
+Every information about dependices are in package-lock.json file.
 To recreate node_modules directory use:
 1) npm install -g auto-install
 2) auto-install
