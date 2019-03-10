@@ -10,7 +10,7 @@ $(document).ready(function () {
         webservice,
         {
             command: "getTableNames",
-            tableSchema: "BIBLIOTEKARZ",            
+            tableSchema: "SAKILA",            
             format: "JSON",
             dataType: 'JSONP'
         })
@@ -21,7 +21,7 @@ $(document).ready(function () {
                     //console.log("External content loaded successfully!: "+responseTxt);   
                     //const mainBrowser = new Browser("table-primary");                 
                     const mainBrowser = new List("http://localhost:8080", 
-                                                 "BIBLIOTEKARZ", 
+                                                 "SAKILA", 
                                                  "#dataContainerId", 
                                                  "templates/tableDataTemplate.html", 
                                                  "#tableDataTemplateId",
