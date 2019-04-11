@@ -9,6 +9,19 @@ class List{
     private _dataRowClass: string;
     private _dataPrimaryKey: string;
     private _dataId: string;
+    /**
+     * 
+     * @param webservice - webserwice address with port ex. "http://localhost:8080"
+     * @param databaseName - daabase name ex. "sakila"
+     * @param dataContainerId - html id param where data from webservice will be presented, ex. "dataContainerId"
+     * @param tableDataTemplate - template file with path for data presentation ex. "templates/tableDataTemplate.html"
+     * @param tableDataTemplateId - id of <table> tag in template file where data twill be present ex. "tableDataTemplateId"
+     * @param markedClass - html class name to marked element with clicked record ex. "table-primary"
+     * @param dataBodyClass -  HTML element class where data are showing
+     * @param dataRowClass 
+     * @param dataPrimaryKey 
+     * @param dataId 
+     */
     constructor(webservice: string,
                 databaseName: string,
                 dataContainerId: string = "#dataContainerId",
