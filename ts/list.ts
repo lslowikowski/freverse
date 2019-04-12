@@ -132,7 +132,13 @@ class List{
     public set dataId(dataId: string){
         this._dataId = dataId;
     }
-
+    /**
+     * Method call on click record
+     * set in HTML row element class markedClass
+     * reading from clicked element unique ids: data-id 
+     * reading from databody element name of primary key names: data-pk
+     * @param event 
+     */
     public getRecordDetail(event:Event){                
         var datarow: HTMLElement;
         if (event.target instanceof Element){            
@@ -176,7 +182,7 @@ class List{
 
     public getDataTable(event:Event){         
         let targetElement = event.target || event.srcElement;   
-        let funkcja = this.getRecordDetail;     
+        let onRecordClick = this.getRecordDetail;     
         let webservice = this._webservice;
         let tableDataTemplate = this._tableDataTemplate;
         let tableDataTemplateId = this._tableDataTemplateId;
@@ -210,7 +216,7 @@ class List{
                             });
                             //console.log(output);                                            
                             // noinspection Annotator
-                            $(dataRowClass).on('click', funkcja);
+                            $(dataRowClass).on('click', onRecordClick);
                         }
                         if (statusTxt == "error")
                             console.log("Error: " + xhr.status + ": " + xhr.statusText);
