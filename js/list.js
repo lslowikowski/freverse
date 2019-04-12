@@ -142,6 +142,13 @@ var List = /** @class */ (function () {
         enumerable: true,
         configurable: true
     });
+    /**
+     * Method call on click record
+     * set in HTML row element class markedClass
+     * reading from clicked element unique ids: data-id
+     * reading from databody element name of primary key names: data-pk
+     * @param event
+     */
     List.prototype.getRecordDetail = function (event) {
         var datarow;
         if (event.target instanceof Element) {
@@ -190,7 +197,7 @@ var List = /** @class */ (function () {
     };
     List.prototype.getDataTable = function (event) {
         var targetElement = event.target || event.srcElement;
-        var funkcja = this.getRecordDetail;
+        var onRecordClick = this.getRecordDetail;
         var webservice = this._webservice;
         var tableDataTemplate = this._tableDataTemplate;
         var tableDataTemplateId = this._tableDataTemplateId;
@@ -221,7 +228,7 @@ var List = /** @class */ (function () {
                         });
                         //console.log(output);                                            
                         // noinspection Annotator
-                        $(dataRowClass).on('click', funkcja);
+                        $(dataRowClass).on('click', onRecordClick);
                     }
                     if (statusTxt == "error")
                         console.log("Error: " + xhr.status + ": " + xhr.statusText);
