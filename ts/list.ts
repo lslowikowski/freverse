@@ -16,9 +16,7 @@ class List{
      * @param dataContainerId - html id param where data from webservice will be presented, ex. "dataContainerId" <div id="dataContainerId" class="tableContainer" style="display:none">
      * @param tableDataTemplate - template file with path for data presentation ex. "templates/tableDataTemplate.html"
      * @param tableDataTemplateId - id of <table> tag in template file where data will be present ex. "tableDataTemplateId" <table id="tableDataTemplateId" class="table table-hover display" style="width:100%">
-     * @param markedClass - HTML class name to marked element with clicked record ex. "table-primary" <tr data-id="1" class="datarow odd table-primary" role="row">
-     * @param dataBodyClass -  HTML element class where data are showing ex. ".databody" <tbody class="databody" data-pk="aktor_id">
-     * @param dataRowClass - HTML element class where row data are showing ex. ".datarow" <tr data-id="2" class="datarow even" role="row">
+     * @param markedClass - HTML class name to marked element with clicked record ex. "table-primary" <tr data-id="1" class="datarow odd table-primary" role="row"> * @param dataBodyClass -  HTML element class where data are showing ex. ".databody" <tbody class="databody" data-pk="aktor_id"> * @param dataRowClass - HTML element class where row data are showing ex. ".datarow" <tr data-id="2" class="datarow even" role="row">
      * @param dataPrimaryKey - HTML element data parameter name where are primary key names ex."data-pk" <tbody class="databody" data-pk="aktor_id">
      * @param dataId - data param of HTML element with record primary key id ex. "data-id" <tr data-id="521" class="datarow odd table-primary" role="row">
      */
